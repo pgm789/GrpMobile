@@ -1,16 +1,16 @@
 package com.example.grpmobile;
 
 public class ActivityItem {
-    private String title;
-    private String description;
-    private String location;
-    private String date;
-    private String status;
-    private int imageResId;
-    private int currentDonation;
-    private int targetDonation;
+    private String title;            // Title of the activity
+    private String description;      // Description of the activity
+    private String location;         // Location where the activity will take place
+    private String date;             // Date of the activity
+    private String status;           // Status of the activity (e.g., ongoing, completed)
+    private int imageResId;          // Resource ID for the image associated with the activity
+    private int currentDonation;     // Current donation amount
+    private int targetDonation;      // Target donation amount
 
-    // 构造函数
+    // Constructor
     public ActivityItem(String title, String description, String location, String date,
                         String status, int imageResId, int currentDonation, int targetDonation) {
         this.title = title;
@@ -23,7 +23,7 @@ public class ActivityItem {
         this.targetDonation = targetDonation;
     }
 
-    // Getter 方法
+    // Getter methods
     public String getTitle() {
         return title;
     }
@@ -56,7 +56,7 @@ public class ActivityItem {
         return targetDonation;
     }
 
-    // Setter 方法（如果需要）
+    // Setter methods (if needed)
     public void setTitle(String title) {
         this.title = title;
     }
@@ -89,11 +89,11 @@ public class ActivityItem {
         this.targetDonation = targetDonation;
     }
 
-    // calculate donate progress
+    // Method to calculate the donation progress as a percentage
     public int getDonationProgress() {
         if (targetDonation == 0) {
-            return 0;
+            return 0;  // If there's no target, progress is 0%
         }
-        return (int) ((double) currentDonation / targetDonation * 100);
+        return (int) ((double) currentDonation / targetDonation * 100);  // Return percentage of donation progress
     }
 }

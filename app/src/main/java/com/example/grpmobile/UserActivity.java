@@ -14,25 +14,25 @@ import java.util.List;
 
 public class UserActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private ActivityAdapter activityAdapter;
-    private List<ActivityItem> activityList;  // 修改这里，确保引用的是正确的 ActivityItem 类
-    private EditText etSearch;
+    private RecyclerView recyclerView;  // RecyclerView to display activities
+    private ActivityAdapter activityAdapter;  // Adapter to bind activity data to RecyclerView
+    private List<ActivityItem> activityList;  // List to hold the activities
+    private EditText etSearch;  // EditText for the search bar
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user);
+        setContentView(R.layout.activity_user);  // Set the layout for this activity
 
-        // 初始化视图
-        etSearch = findViewById(R.id.etSearch);
-        recyclerView = findViewById(R.id.recyclerViewActivities);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Initialize views
+        etSearch = findViewById(R.id.etSearch);  // Search bar for filtering activities
+        recyclerView = findViewById(R.id.recyclerViewActivities);  // RecyclerView to show activity list
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));  // Set LinearLayoutManager for RecyclerView
 
-        // 初始化活动列表
+        // Initialize the activity list
         activityList = new ArrayList<>();
 
-        // 添加活动数据
+        // Add sample activities to the list
         activityList.add(new ActivityItem(
                 "Community Book Donation",
                 "Collect books for children in need",
@@ -63,9 +63,9 @@ public class UserActivity extends AppCompatActivity {
                 100,
                 100));
 
-        // 设置适配器
+        // Set the adapter for RecyclerView
         activityAdapter = new ActivityAdapter(activityList, item -> {
-            // 点击活动条目，跳转到注册页面
+            // When an activity item is clicked, navigate to RegistrationActivity
             Intent intent = new Intent(UserActivity.this, RegistrationActivity.class);
             intent.putExtra("title", item.getTitle());
             intent.putExtra("description", item.getDescription());
@@ -76,15 +76,16 @@ public class UserActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        recyclerView.setAdapter(activityAdapter);
+        recyclerView.setAdapter(activityAdapter);  // Set the adapter to the RecyclerView
 
-        // 搜索过滤功能
+        // Add text change listener to the search bar
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Filter activities when the user types in the search bar
                 filterActivities(s.toString());
             }
 
@@ -93,16 +94,17 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    // 根据搜索条件过滤活动
+    // Filter activities based on the search query
     private void filterActivities(String query) {
         List<ActivityItem> filtered = new ArrayList<>();
+        // Iterate through the list of activities and check if the title, description, or location contains the search query
         for (ActivityItem item : activityList) {
             if (item.getTitle().toLowerCase().contains(query.toLowerCase()) ||
                     item.getDescription().toLowerCase().contains(query.toLowerCase()) ||
                     item.getLocation().toLowerCase().contains(query.toLowerCase())) {
-                filtered.add(item);
+                filtered.add(item);  // Add to filtered list if any of the fields match the query
             }
         }
-        activityAdapter.updateList(filtered);
+        activityAdapter.updateList(filtered);  // Update the RecyclerView with the filtered list
     }
 }

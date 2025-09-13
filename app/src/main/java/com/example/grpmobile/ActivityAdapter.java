@@ -13,69 +13,70 @@ import java.util.List;
 
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ActivityViewHolder> {
 
-    private List<ActivityItem> activityList;  // 修改为正确的 ActivityItem 路径
-    private OnItemClickListener listener;
+    private List<ActivityItem> activityList;  // List to store activity items
+    private OnItemClickListener listener;     // Listener to handle item clicks
 
-    // 接口用于处理点击事件
+    // Interface to handle item click events
     public interface OnItemClickListener {
-        void onItemClick(ActivityItem item);  // 修改为正确的 ActivityItem 路径
+        void onItemClick(ActivityItem item);  // Method to handle item click
     }
 
-    // 构造方法
+    // Constructor for the adapter
     public ActivityAdapter(List<ActivityItem> activityList, OnItemClickListener listener) {
         this.activityList = activityList;
         this.listener = listener;
     }
 
-    // 创建视图
+    // Create a new view for each item in the list
     @NonNull
     @Override
     public ActivityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_activity_card, parent, false);  // 使用你的卡片布局
-        return new ActivityViewHolder(view);
+                .inflate(R.layout.item_activity_card, parent, false);  // Inflate the item layout
+        return new ActivityViewHolder(view);  // Return a new ViewHolder
     }
 
-    // 绑定视图
+    // Bind data to the views in the ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
-        ActivityItem item = activityList.get(position);
+        ActivityItem item = activityList.get(position);  // Get the current activity item
 
+        // Set text for various TextViews
         holder.tvTitle.setText(item.getTitle());
         holder.tvDescription.setText(item.getDescription());
         holder.tvLocation.setText("Location: " + item.getLocation());
         holder.tvDate.setText("Date: " + item.getDate());
         holder.tvStatus.setText(item.getStatus());
 
-        // 设置状态颜色
+        // Set color for the status based on whether it's ongoing or not
         if ("Ongoing".equalsIgnoreCase(item.getStatus())) {
             holder.tvStatus.setTextColor(holder.itemView.getResources().getColor(android.R.color.holo_green_dark));
         } else {
             holder.tvStatus.setTextColor(holder.itemView.getResources().getColor(android.R.color.darker_gray));
         }
 
-        // 设置活动图片
+        // Set the activity image
         holder.imageActivity.setImageResource(item.getImageResId());
 
-        // 点击事件
+        // Handle item click event
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(item);
+                listener.onItemClick(item);  // Trigger the listener when an item is clicked
             }
         });
     }
 
-    // 返回项数
+    // Return the total number of items in the list
     @Override
     public int getItemCount() {
         return activityList.size();
     }
 
-    // ViewHolder 类，用来存储视图中的控件
+    // ViewHolder class to hold references to the views for an individual item
     public static class ActivityViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvTitle, tvDescription, tvLocation, tvDate, tvStatus;
-        ImageView imageActivity;
+        TextView tvTitle, tvDescription, tvLocation, tvDate, tvStatus;  // Views for activity details
+        ImageView imageActivity;  // Image view for activity image
 
         public ActivityViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,9 +89,9 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         }
     }
 
-    // 用于更新列表（过滤）
-    public void updateList(List<ActivityItem> filteredList) {  // 修改为正确的 ActivityItem 路径
+    // Method to update the list of activities, useful for filtering
+    public void updateList(List<ActivityItem> filteredList) {
         activityList = filteredList;
-        notifyDataSetChanged();
+        notifyDataSetChanged();  // Notify the adapter that the data has changed
     }
 }

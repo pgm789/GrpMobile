@@ -1,4 +1,4 @@
-package com.example.grpmobile;  // 修改为你的包路径
+package com.example.grpmobile;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,21 +10,21 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.grpmobile.R;  // 修改为你的包路径
+import com.example.grpmobile.R;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private TextView tvTitle, tvDescription, tvLocation, tvDate, tvStatus;
-    private ImageView imageActivity;
-    private EditText etName, etContact, etDonationAmount;
-    private Button btnSubmit;
+    private TextView tvTitle, tvDescription, tvLocation, tvDate, tvStatus;  // TextViews to display activity details
+    private ImageView imageActivity;  // ImageView to display activity image
+    private EditText etName, etContact, etDonationAmount;  // EditText fields for user input (name, contact, donation)
+    private Button btnSubmit;  // Button to submit the registration
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);  // 你的注册界面布局
+        setContentView(R.layout.activity_registration);  // Set the content view
 
-        // 初始化控件
+        // Initialize the views
         tvTitle = findViewById(R.id.tvTitle);
         tvDescription = findViewById(R.id.tvDescription);
         tvLocation = findViewById(R.id.tvLocation);
@@ -37,7 +37,7 @@ public class RegistrationActivity extends AppCompatActivity {
         etDonationAmount = findViewById(R.id.etDonationAmount);
         btnSubmit = findViewById(R.id.btnSubmit);
 
-        // 接收 Intent 传来的数据
+        // Get data passed from the previous activity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             tvTitle.setText(extras.getString("title"));
@@ -48,16 +48,16 @@ public class RegistrationActivity extends AppCompatActivity {
             imageActivity.setImageResource(extras.getInt("imageResId"));
         }
 
-        // 设置提交按钮的点击监听
+        // Set click listener for the submit button
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 获取用户输入
+                // Get user input
                 String name = etName.getText().toString().trim();
                 String contact = etContact.getText().toString().trim();
                 String donationStr = etDonationAmount.getText().toString().trim();
 
-                // 输入验证
+                // Input validation
                 if (name.isEmpty()) {
                     etName.setError("Please enter your name");
                     etName.requestFocus();
@@ -76,6 +76,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
 
+                // Parse donation amount to double
                 double donation;
                 try {
                     donation = Double.parseDouble(donationStr);
@@ -85,16 +86,16 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
 
-                // 格式化捐赠金额为2位小数
+                // Format the donation amount to 2 decimal places
                 String formattedAmount = String.format("%.2f", donation);
 
-                // 显示捐赠成功的提示信息
+                // Show a thank you message with the donation details
                 Toast.makeText(RegistrationActivity.this,
                         "Thank you " + name + " for donating RM" + formattedAmount +
                                 ". We may contact you at " + contact,
                         Toast.LENGTH_LONG).show();
 
-                // 提交后关闭当前页面
+                // Close the current activity after submission
                 finish();
             }
         });

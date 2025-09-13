@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnLogin;
     private TextView tvGoToSignup;
     private DBHelper dbHelper;
-    private boolean isLoginMode = true;  // 默认是登录模式
+    private boolean isLoginMode = true;  // The default is login mode
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
