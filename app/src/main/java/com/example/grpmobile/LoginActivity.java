@@ -26,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
         edtLoginName = findViewById(R.id.edtLoginName);
         edtLoginPassword = findViewById(R.id.edtLoginPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        btnSignup = findViewById(R.id.btnSignup);
 
         // Initialize DBHelper
         dbHelper = new DBHelper(this);
