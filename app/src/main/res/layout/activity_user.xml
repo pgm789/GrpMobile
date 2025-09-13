@@ -7,18 +7,19 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tvUserTitle"
-        android:layout_width="0dp"
+    <!-- Toolbar for the menu bar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Available Activities"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:background="?android:attr/colorPrimary"
+        app:title="User Activity"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="12dp"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Search bar -->
     <EditText
         android:id="@+id/etSearch"
         android:layout_width="0dp"
@@ -27,11 +28,12 @@
         android:drawableStart="@android:drawable/ic_menu_search"
         android:padding="10dp"
         android:background="@android:drawable/edit_text"
-        app:layout_constraintTop_toBottomOf="@id/tvUserTitle"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="12dp"/>
 
+    <!-- RecyclerView to display activities -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewActivities"
         android:layout_width="0dp"

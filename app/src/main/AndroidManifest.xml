@@ -24,6 +24,8 @@
         <activity android:name=".UserActivity" />
         <activity android:name=".RegistrationActivity" />
         <activity android:name=".AdminActivity" />
+        <activity android:name=".AboutActivity" />
+
 
     </application>
 

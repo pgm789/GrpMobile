@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +27,10 @@ public class UserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);  // Set the layout for this activity
+
+        // Initialize the toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);  // Set the toolbar as the ActionBar
 
         // Initialize views
         etSearch = findViewById(R.id.etSearch);  // Search bar for filtering activities
@@ -106,5 +114,39 @@ public class UserActivity extends AppCompatActivity {
             }
         }
         activityAdapter.updateList(filtered);  // Update the RecyclerView with the filtered list
+    }
+
+    // Inflate the menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);  // Inflate the menu from XML
+        return true;
+    }
+
+    // Handle item selection from the menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId(); // Get the item ID
+
+        if (itemId == R.id.menu_about_us) {
+            // Handle "About Us" option
+            Intent aboutUsIntent = new Intent(UserActivity.this, AboutActivity.class);
+            startActivity(aboutUsIntent);
+            return true;
+        } else if (itemId == R.id.menu_logout) {
+            // Handle "Logout" option
+            Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
+
+            // Navigate to LoginActivity when logging out
+            Intent loginIntent = new Intent(UserActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+
+            // Optionally, you can also clear the current activity stack so the user cannot return to the UserActivity by pressing back
+            finishAffinity();  // This will close all activities in the stack
+
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
