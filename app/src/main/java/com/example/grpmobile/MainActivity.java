@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnLogin;
     private TextView tvGoToSignup;
     private DBHelper dbHelper;
-    private boolean isLoginMode = true;  // The default is login mode
+    private boolean isLoginMode = true;  // Default is login mode
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,47 +36,39 @@ public class MainActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         tvGoToSignup = findViewById(R.id.tvGoToSignup);
 
-        // Initialize DBHelper
         dbHelper = new DBHelper(this);
 
         // Set up the login button click listener
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isLoginMode) {
-                    login(); // 执行登录
-                } else {
-                    signup(); // 执行注册
-                }
+        btnLogin.setOnClickListener(v -> {
+            if (isLoginMode) {
+                login();
+            } else {
+                signup();
             }
         });
 
         // Set up "Go to Sign Up" TextView click listener
-        tvGoToSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isLoginMode) {
-                    // Switch to Sign Up mode
-                    isLoginMode = false;
-                    btnLogin.setText("Sign Up");
-                    tvGoToSignup.setText("Back to Login");
-                    edtName.setText(""); // Clear the name and password
-                    edtPassword.setText("");
-                    radioGroup.setVisibility(View.VISIBLE); // Show role selection (for Sign Up)
-                } else {
-                    // Switch back to Login mode
-                    isLoginMode = true;
-                    btnLogin.setText("Login");
-                    tvGoToSignup.setText("Go to Sign Up");
-                    edtName.setText(""); // Clear the name and password
-                    edtPassword.setText("");
-                    radioGroup.setVisibility(View.GONE); // Hide role selection (for Login)
-                }
+        tvGoToSignup.setOnClickListener(v -> {
+            if (isLoginMode) {
+                // Switch to sign up mode
+                isLoginMode = false;
+                btnLogin.setText("Sign Up");
+                tvGoToSignup.setText("Back to Login");
+                edtName.setText(""); // Clear name and password
+                edtPassword.setText("");
+                radioGroup.setVisibility(View.VISIBLE); // Show role selection (for sign up)
+            } else {
+                // Switch back to login mode
+                isLoginMode = true;
+                btnLogin.setText("Login");
+                tvGoToSignup.setText("Go to Sign Up");
+                edtName.setText(""); // Clear name and password
+                edtPassword.setText("");
+                radioGroup.setVisibility(View.GONE); // Hide role selection (for login)
             }
         });
     }
 
-    // Handle Login logic
     private void login() {
         String name = edtName.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
@@ -92,10 +84,8 @@ public class MainActivity extends AppCompatActivity {
             // Get user role (User or Admin)
             String role = getUserRole(name, password);
             if ("User".equals(role)) {
-                // Navigate to UserActivity
                 startActivity(new Intent(MainActivity.this, UserActivity.class));
             } else if ("Admin".equals(role)) {
-                // Navigate to AdminActivity
                 startActivity(new Intent(MainActivity.this, AdminActivity.class));
             }
             finish(); // Close current activity
@@ -104,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Handle Signup logic
     private void signup() {
         String name = edtName.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
@@ -119,63 +108,51 @@ public class MainActivity extends AppCompatActivity {
         RadioButton selectedRoleButton = findViewById(selectedId);
         String role = selectedRoleButton.getText().toString();
 
-        // Save the user to the database
-        saveUserToDatabase(name, password, role);
-        Toast.makeText(MainActivity.this, "Signup successful", Toast.LENGTH_SHORT).show();
+        if (role.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Please select a role", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // After signup, switch back to Login mode
-        isLoginMode = true;
-        btnLogin.setText("Login");
-        tvGoToSignup.setText("Go to Sign Up");
-        edtName.setText(""); // Clear the name and password
-        edtPassword.setText("");
-        radioGroup.setVisibility(View.GONE); // Hide role selection after signup
+        // Save the user to the database
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("username", name);
+        values.put("password", password);
+        values.put("role", role);
+
+        long rowId = db.insert("users", null, values);
+
+        if (rowId != -1) {
+            Toast.makeText(MainActivity.this, "Sign up successful", Toast.LENGTH_SHORT).show();
+            isLoginMode = true;
+            btnLogin.setText("Login");
+            tvGoToSignup.setText("Go to Sign Up");
+            radioGroup.setVisibility(View.GONE); // Hide role selection after signup
+        } else {
+            Toast.makeText(MainActivity.this, "Sign up failed", Toast.LENGTH_SHORT).show();
+        }
+
+        db.close();
     }
 
-    // Validate the user credentials in the database
     private boolean isUserValid(String username, String password) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] columns = {"username", "password"};
-        String selection = "username = ? AND password = ?";
-        String[] selectionArgs = {username, password};
-
-        Cursor cursor = db.query("users", columns, selection, selectionArgs, null, null, null);
+        Cursor cursor = db.query("users", null, "username=? AND password=?", new String[]{username, password}, null, null, null);
         boolean isValid = cursor.getCount() > 0;
         cursor.close();
         db.close();
-
         return isValid;
     }
 
-    // Get the role of the user (User or Admin)
     private String getUserRole(String username, String password) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] columns = {"role"};
-        String selection = "username = ? AND password = ?";
-        String[] selectionArgs = {username, password};
-
-        Cursor cursor = db.query("users", columns, selection, selectionArgs, null, null, null);
+        Cursor cursor = db.query("users", new String[]{"role"}, "username=? AND password=?", new String[]{username, password}, null, null, null);
         String role = "";
         if (cursor.moveToFirst()) {
             role = cursor.getString(cursor.getColumnIndex("role"));
         }
-
         cursor.close();
         db.close();
-
         return role;
-    }
-
-    // Save user information to the database
-    private void saveUserToDatabase(String username, String password, String role) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("username", username);
-        values.put("password", password);
-        values.put("role", role);
-
-        db.insert("users", null, values);
-        db.close();
     }
 }
